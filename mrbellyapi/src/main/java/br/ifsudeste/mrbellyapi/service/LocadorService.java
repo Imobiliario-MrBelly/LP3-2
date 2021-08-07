@@ -1,6 +1,7 @@
 package br.ifsudeste.mrbellyapi.service;
 
 import br.ifsudeste.mrbellyapi.api.exception.RegraDeNegocioException;
+import br.ifsudeste.mrbellyapi.model.entity.Imovel;
 import br.ifsudeste.mrbellyapi.model.entity.Locador;
 import br.ifsudeste.mrbellyapi.model.repository.LocadorRepository;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.util.Optional;
 @Service
 public class LocadorService {
 	private LocadorRepository repository;
+	private ImovelService imovelService;
 
 	public LocadorService(LocadorRepository repository) {
 		this.repository = repository;
@@ -33,12 +35,18 @@ public class LocadorService {
 		return repository.save(locador);
 	}
 	
+
 	@Transactional
     public void excluir(Locador locador) {
         Objects.requireNonNull(locador.getId());
+        
+        for (Imovel imovel : locador.getImoveis()) {
+            imovel.setLocador(null);
+            imovelService.salvar(imovel);
+        }
         repository.delete(locador);
     }
-
+	
 	private void validar(Locador locador) {
 		if (locador.getNome()==null||locador.getNome().trim().equals("")){
 			throw new RegraDeNegocioException("Nome inválido");
