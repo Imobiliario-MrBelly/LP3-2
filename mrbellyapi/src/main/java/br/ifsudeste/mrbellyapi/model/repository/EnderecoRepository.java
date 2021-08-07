@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.ifsudeste.mrbellyapi.model.entity.Endereco;
 
-public interface EnderecoRepository extends JpaRepository<Endereco, Long>{
+public interface EnderecoRepository extends JpaRepository<Endereco, Long> {
 }

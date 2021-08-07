@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/")
 public class IndexResource {
-    @GetMapping()
-    public String get(){
-        return "API MR.Belly";
-    }
+	@GetMapping()
+	public String get() {
+		return "API MR.Belly";
+	}
 }

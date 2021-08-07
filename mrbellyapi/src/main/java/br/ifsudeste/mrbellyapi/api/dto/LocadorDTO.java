@@ -1,14 +1,16 @@
 package br.ifsudeste.mrbellyapi.api.dto;
 
-import br.ifsudeste.mrbellyapi.model.entity.Locador;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.time.LocalDate;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import br.ifsudeste.mrbellyapi.model.entity.Locador;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -25,7 +27,6 @@ public class LocadorDTO {
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataNascimento;
-
 	private String telefone;
 
 	private String rua;
@@ -34,9 +35,6 @@ public class LocadorDTO {
 	private String cep;
 	private String cidade;
 	private String uf;
-
-	private String email;
-	private String senha;
 
 	public static LocadorDTO create(Locador locador) {
 		ModelMapper modelMapper = new ModelMapper();
@@ -48,9 +46,6 @@ public class LocadorDTO {
 		dto.cep = locador.getEndereco().getCep();
 		dto.cidade = locador.getEndereco().getCidade();
 		dto.uf = locador.getEndereco().getUf();
-
-		dto.email = locador.getLogin().getEmail();
-		dto.senha = locador.getLogin().getSenha();
 
 		return dto;
 	}

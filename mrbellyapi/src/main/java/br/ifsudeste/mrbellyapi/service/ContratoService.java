@@ -1,14 +1,16 @@
 package br.ifsudeste.mrbellyapi.service;
 
-import br.ifsudeste.mrbellyapi.api.exception.RegraDeNegocioException;
-import br.ifsudeste.mrbellyapi.model.entity.Contrato;
-import br.ifsudeste.mrbellyapi.model.repository.ContratoRepository;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import javax.transaction.Transactional;
+
+import org.springframework.stereotype.Service;
+
+import br.ifsudeste.mrbellyapi.api.exception.RegraDeNegocioException;
+import br.ifsudeste.mrbellyapi.model.entity.Contrato;
+import br.ifsudeste.mrbellyapi.model.repository.ContratoRepository;
 
 @Service
 public class ContratoService {
@@ -51,9 +53,9 @@ public class ContratoService {
 		if (contrato.getValor() == 0) {
 			throw new RegraDeNegocioException("Valor não inserido");
 		}
-		
+
 		if (contrato.getDataInicio() != null && contrato.getDataFim() != null) {
-			
+
 			if (contrato.getDataFim().compareTo(contrato.getDataInicio()) <= 0) {
 				throw new RegraDeNegocioException("Data inválida");
 			}

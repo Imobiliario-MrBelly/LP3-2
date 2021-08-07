@@ -1,25 +1,30 @@
 package br.ifsudeste.mrbellyapi.api.controller;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import br.ifsudeste.mrbellyapi.api.dto.ImovelDTO;
 import br.ifsudeste.mrbellyapi.api.dto.LocadorDTO;
 import br.ifsudeste.mrbellyapi.api.exception.RegraDeNegocioException;
 import br.ifsudeste.mrbellyapi.model.entity.Endereco;
 import br.ifsudeste.mrbellyapi.model.entity.Imovel;
 import br.ifsudeste.mrbellyapi.model.entity.Locador;
-import br.ifsudeste.mrbellyapi.model.entity.Login;
 import br.ifsudeste.mrbellyapi.service.EnderecoService;
 import br.ifsudeste.mrbellyapi.service.ImovelService;
 import br.ifsudeste.mrbellyapi.service.LocadorService;
-import br.ifsudeste.mrbellyapi.service.LoginService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/locadores")
@@ -27,7 +32,6 @@ import java.util.stream.Collectors;
 public class LocadorController {
 	private final LocadorService service;
 	private final EnderecoService enderecoService;
-	private final LoginService loginService;
 	private final ImovelService imovelService;
 
 	@GetMapping()
@@ -60,8 +64,6 @@ public class LocadorController {
 		try {
 			Locador locador = converter(dto);
 			Endereco endereco = enderecoService.salvar(locador.getEndereco());
-			Login login = loginService.salvar(locador.getLogin());
-			locador.setLogin(login);
 			locador.setEndereco(endereco);
 			locador = service.salvar(locador);
 			return new ResponseEntity(locador, HttpStatus.CREATED);
@@ -78,9 +80,7 @@ public class LocadorController {
 		try {
 			Locador locador = converter(dto);
 			Endereco endereco = locador.getEndereco();
-			Login login = locador.getLogin();
 			enderecoService.salvar(endereco);
-			loginService.salvar(login);
 			service.salvar(locador);
 			return new ResponseEntity(locador, HttpStatus.CREATED);
 		} catch (RegraDeNegocioException e) {
@@ -106,11 +106,9 @@ public class LocadorController {
 		ModelMapper modelMapper = new ModelMapper();
 
 		Locador locador = modelMapper.map(dto, Locador.class);
-		Login login = modelMapper.map(dto, Login.class);
 		Endereco endereco = modelMapper.map(dto, Endereco.class);
 
 		locador.setEndereco(endereco);
-		locador.setLogin(login);
 
 		return locador;
 	}

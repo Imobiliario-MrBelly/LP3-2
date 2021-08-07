@@ -1,14 +1,16 @@
 package br.ifsudeste.mrbellyapi.api.dto;
 
-import br.ifsudeste.mrbellyapi.model.entity.Contrato;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.time.LocalDate;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import br.ifsudeste.mrbellyapi.model.entity.Contrato;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -27,7 +29,7 @@ public class ContratoDTO {
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataFim;
-	
+
 	private double valor;
 
 	public static ContratoDTO create(Contrato contrato) {
