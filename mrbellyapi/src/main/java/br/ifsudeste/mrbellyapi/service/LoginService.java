@@ -1,51 +1,39 @@
 package br.ifsudeste.mrbellyapi.service;
 
-import br.ifsudeste.mrbellyapi.api.exception.RegraDeNegocioException;
-import br.ifsudeste.mrbellyapi.model.entity.Locatario;
 import br.ifsudeste.mrbellyapi.model.entity.Login;
 import br.ifsudeste.mrbellyapi.model.repository.LoginRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
-public class LoginService {
+public class LoginService implements UserDetailsService {
+	@Autowired
+	private PasswordEncoder encoder;
+
+	@Autowired
 	private LoginRepository repository;
-
-	public LoginService(LoginRepository repository) {
-		this.repository = repository;
-	}
-
-	public List<Login> getLogins() {
-		return repository.findAll();
-	}
-
-	public Optional<Login> getLoginById(Long id) {
-		return repository.findById(id);
-	}
 
 	@Transactional
 	public Login salvar(Login login) {
-		validar(login);
 		return repository.save(login);
 	}
-	
-	@Transactional
-    public void excluir(Login login) {
-        Objects.requireNonNull(login.getId());
-        repository.delete(login);
-    }
 
-	private void validar(Login login) {
-		if (login.getEmail() == null || login.getEmail().trim().equals("")) {
-			throw new RegraDeNegocioException("E-mail não inserido");
-		}
-		if (login.getSenha() == null || login.getSenha().trim().equals("")) {
-			throw new RegraDeNegocioException("Senha não inserida");
-		}
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+		Login login = repository.findByLogin(username)
+				.orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+
+		String[] roles = login.isAdmin() ? new String[] { "ADMIN", "USER" } : new String[] { "USER" };
+
+		return User.builder().username(login.getEmail()).password(login.getSenha()).roles(roles).build();
 	}
-
 }
