@@ -1,10 +1,11 @@
 package br.ifsudeste.mrbellyapi.api.dto;
 
+import org.modelmapper.ModelMapper;
+
 import br.ifsudeste.mrbellyapi.model.entity.Endereco;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.modelmapper.ModelMapper;
 
 @Data
 @NoArgsConstructor
@@ -16,8 +17,8 @@ public class EnderecoDTO {
 	private String numero;
 	private String bairro;
 	private String cep;
-    private String cidade;
-    private String uf;
+	private String cidade;
+	private String uf;
 
 	public static EnderecoDTO create(Endereco endereco) {
 		ModelMapper modelMapper = new ModelMapper();

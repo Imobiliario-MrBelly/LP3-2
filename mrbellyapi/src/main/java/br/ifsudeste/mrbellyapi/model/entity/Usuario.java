@@ -9,19 +9,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Endereco {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+@Entity
+public class Usuario {
 
-	private String rua;
-	private String numero;
-	private String bairro;
-	private String cep;
-	private String cidade;
-	private String uf;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Integer id;
+
+	private String login;
+
+	private String senha;
+
+	private boolean admin;
 }

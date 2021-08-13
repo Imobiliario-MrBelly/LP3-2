@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MrbellyapiApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(MrbellyapiApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(MrbellyapiApplication.class, args);
+	}
 }

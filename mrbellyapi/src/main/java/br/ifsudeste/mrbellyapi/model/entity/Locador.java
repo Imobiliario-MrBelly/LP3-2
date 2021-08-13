@@ -1,20 +1,23 @@
 package br.ifsudeste.mrbellyapi.model.entity;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Locador extends Pessoa {
-
-	@OneToOne
-	private Login login;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private Endereco endereco;
