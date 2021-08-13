@@ -7,10 +7,13 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import br.ifsudeste.mrbellyapi.service.UsuarioService;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -18,9 +21,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UsuarioService usuarioService;
 
+	@Autowired
+	private JwtService jwtService;
+
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public OncePerRequestFilter jwtFilter(){
+		return new JwtAuthFilter(jwtService, usuarioService);
 	}
 
 	@Override
@@ -38,7 +49,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/v1/locadores/**").hasRole("ADMIN")
 				.antMatchers("/api/v1/locatarios/**").hasRole("ADMIN")
 				.antMatchers(HttpMethod.POST, "/api/v1/usuarios/**").permitAll().anyRequest()
-				.authenticated().and().httpBasic();
+				.authenticated().and().sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+				.addFilterBefore(jwtFilter(),
+						UsernamePasswordAuthenticationFilter.class);
 		;
 	}
 }
