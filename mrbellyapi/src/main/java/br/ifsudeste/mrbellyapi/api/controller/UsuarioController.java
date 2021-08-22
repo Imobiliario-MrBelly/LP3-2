@@ -1,9 +1,5 @@
 package br.ifsudeste.mrbellyapi.api.controller;
 
-import br.ifsudeste.mrbellyapi.api.dto.CredenciaisDTO;
-import br.ifsudeste.mrbellyapi.api.dto.TokenDTO;
-import br.ifsudeste.mrbellyapi.api.exception.SenhaInvalidaException;
-import br.ifsudeste.mrbellyapi.config.JwtService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,15 +9,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import br.ifsudeste.mrbellyapi.model.entity.Usuario;
-import br.ifsudeste.mrbellyapi.service.UsuarioService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.server.ResponseStatusException;
+
+import br.ifsudeste.mrbellyapi.api.dto.CredenciaisDTO;
+import br.ifsudeste.mrbellyapi.api.dto.TokenDTO;
+import br.ifsudeste.mrbellyapi.api.exception.SenhaInvalidaException;
+import br.ifsudeste.mrbellyapi.model.entity.Usuario;
+import br.ifsudeste.mrbellyapi.security.JwtService;
+import br.ifsudeste.mrbellyapi.service.UsuarioService;
+import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/usuarios")
 @RequiredArgsConstructor
+@Api("API de Usuários")
 public class UsuarioController {
 
 	private final UsuarioService usuarioService;
@@ -35,16 +37,15 @@ public class UsuarioController {
 		usuario.setSenha(senhaCriptografada);
 		return usuarioService.salvar(usuario);
 	}
+
 	@PostMapping("/auth")
-	public TokenDTO autenticar(@RequestBody CredenciaisDTO credenciais){
-		try{
-			Usuario usuario = Usuario.builder()
-					.login(credenciais.getLogin())
-					.senha(credenciais.getSenha()).build();
+	public TokenDTO autenticar(@RequestBody CredenciaisDTO credenciais) {
+		try {
+			Usuario usuario = Usuario.builder().login(credenciais.getLogin()).senha(credenciais.getSenha()).build();
 			UserDetails usuarioAutenticado = usuarioService.autenticar(usuario);
 			String token = jwtService.gerarToken(usuario);
 			return new TokenDTO(usuario.getLogin(), token);
-		} catch (UsernameNotFoundException | SenhaInvalidaException e ){
+		} catch (UsernameNotFoundException | SenhaInvalidaException e) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
 		}
 	}

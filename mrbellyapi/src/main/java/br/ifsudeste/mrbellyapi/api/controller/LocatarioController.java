@@ -19,23 +19,35 @@ import br.ifsudeste.mrbellyapi.api.dto.LocatarioDTO;
 import br.ifsudeste.mrbellyapi.api.exception.RegraDeNegocioException;
 import br.ifsudeste.mrbellyapi.model.entity.Locatario;
 import br.ifsudeste.mrbellyapi.service.LocatarioService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/locatarios")
 @RequiredArgsConstructor
+@Api("API de Locatários")
 public class LocatarioController {
 
 	private final LocatarioService service;
 
 	@GetMapping()
+	@ApiOperation("Obter todos os locatários")
 	public ResponseEntity get() {
 		List<Locatario> locatarios = service.getLocatarios();
 		return ResponseEntity.ok(locatarios.stream().map(LocatarioDTO::create).collect(Collectors.toList()));
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity get(@PathVariable("id") Long id) {
+	@ApiOperation("Obter detalhes de um locatário")
+	@ApiResponses({ 
+		@ApiResponse(code = 200, message = "Locatário encontrado"),
+		@ApiResponse(code = 404, message = "Locatário não encontrado")
+	})
+	public ResponseEntity get(@PathVariable("id") @ApiParam("Id do locatário") Long id) {
 		Optional<Locatario> locatario = service.getLocatarioById(id);
 		if (!locatario.isPresent()) {
 			return new ResponseEntity("Locatário não encontrado", HttpStatus.NOT_FOUND);
@@ -44,6 +56,11 @@ public class LocatarioController {
 	}
 
 	@PostMapping()
+	@ApiOperation("Salva um novo locatário")
+	@ApiResponses({
+        @ApiResponse(code = 201, message = "Locatário salvo com sucesso"),
+        @ApiResponse(code = 400, message = "Erro ao salvar o locatário")
+	})
 	public ResponseEntity post(LocatarioDTO dto) {
 		try {
 			Locatario locatario = converter(dto);
@@ -55,7 +72,8 @@ public class LocatarioController {
 	}
 
 	@PutMapping("{id}")
-	public ResponseEntity atualizar(@PathVariable("id") Long id, LocatarioDTO dto) {
+	@ApiOperation("Salva um novo locatário")
+	public ResponseEntity atualizar(@PathVariable("id") @ApiParam("Id do locatário") Long id, LocatarioDTO dto) {
 		if (!service.getLocatarioById(id).isPresent()) {
 			return new ResponseEntity("Locatário não encontrado", HttpStatus.NOT_FOUND);
 		}
@@ -69,7 +87,8 @@ public class LocatarioController {
 	}
 
 	@DeleteMapping("{id}")
-	public ResponseEntity excluir(@PathVariable("id") Long id) {
+	@ApiOperation("Excluir um locatário")
+	public ResponseEntity excluir(@PathVariable("id") @ApiParam("Id do locatário") Long id) {
 		Optional<Locatario> locatario = service.getLocatarioById(id);
 		if (!locatario.isPresent()) {
 			return new ResponseEntity("Locatário não encontrado", HttpStatus.NOT_FOUND);

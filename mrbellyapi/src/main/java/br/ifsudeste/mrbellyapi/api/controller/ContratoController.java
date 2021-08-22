@@ -24,11 +24,17 @@ import br.ifsudeste.mrbellyapi.service.ContratoService;
 import br.ifsudeste.mrbellyapi.service.FiadorService;
 import br.ifsudeste.mrbellyapi.service.ImovelService;
 import br.ifsudeste.mrbellyapi.service.LocatarioService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/contratos")
 @RequiredArgsConstructor
+@Api("API de Contratos")
 public class ContratoController {
 
 	private final ContratoService service;
@@ -37,13 +43,19 @@ public class ContratoController {
 	private final FiadorService fiadorService;
 
 	@GetMapping()
+	@ApiOperation("Obter todos os contratos")
 	public ResponseEntity get() {
 		List<Contrato> contratos = service.getContratos();
 		return ResponseEntity.ok(contratos.stream().map(ContratoDTO::create).collect(Collectors.toList()));
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity get(@PathVariable("id") Long id) {
+	@ApiOperation("Obter detalhes de um contrato")
+	@ApiResponses({ 
+		@ApiResponse(code = 200, message = "Contrato encontrado"),
+		@ApiResponse(code = 404, message = "Contrato não encontrado")
+	})
+	public ResponseEntity get(@PathVariable("id") @ApiParam("Id do contrato") Long id) {
 		Optional<Contrato> contrato = service.getContratoById(id);
 		if (!contrato.isPresent()) {
 			return new ResponseEntity("Contrato não encontrado", HttpStatus.NOT_FOUND);
@@ -52,6 +64,11 @@ public class ContratoController {
 	}
 
 	@PostMapping()
+	@ApiOperation("Salva um novo contrato")
+	@ApiResponses({
+        @ApiResponse(code = 201, message = "Contrato salvo com sucesso"),
+        @ApiResponse(code = 400, message = "Erro ao salvar o contrato")
+	})
 	public ResponseEntity post(ContratoDTO dto) {
 		try {
 			Contrato contrato = converter(dto);
@@ -63,8 +80,11 @@ public class ContratoController {
 	}
 
 	@DeleteMapping("{id}")
-	public ResponseEntity excluir(@PathVariable("id") Long id) {
+	@ApiOperation("Excluir um contrato")
+	public ResponseEntity excluir(@PathVariable("id") @ApiParam("Id do contrato") Long id) {
+		
 		Optional<Contrato> contrato = service.getContratoById(id);
+		
 		if (!contrato.isPresent()) {
 			return new ResponseEntity("Contrato não encontrado", HttpStatus.NOT_FOUND);
 		}

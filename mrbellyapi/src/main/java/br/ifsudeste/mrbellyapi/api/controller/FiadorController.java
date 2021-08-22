@@ -20,23 +20,35 @@ import br.ifsudeste.mrbellyapi.model.entity.Endereco;
 import br.ifsudeste.mrbellyapi.model.entity.Fiador;
 import br.ifsudeste.mrbellyapi.service.EnderecoService;
 import br.ifsudeste.mrbellyapi.service.FiadorService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/fiadores")
 @RequiredArgsConstructor
+@Api("API de Fiadores")
 public class FiadorController {
 	private final FiadorService service;
 	private final EnderecoService enderecoService;
 
 	@GetMapping()
+	@ApiOperation("Obter todos os fiadores")
 	public ResponseEntity get() {
 		List<Fiador> fiadores = service.getFiadores();
 		return ResponseEntity.ok(fiadores.stream().map(FiadorDTO::create));
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity get(@PathVariable("id") Long id) {
+	@ApiOperation("Obter detalhes de um fiador")
+	@ApiResponses({ 
+		@ApiResponse(code = 200, message = "Fiador encontrado"),
+		@ApiResponse(code = 404, message = "Fiador não encontrado")
+	})
+	public ResponseEntity get(@PathVariable("id") @ApiParam("Id do fiador") Long id) {
 		Optional<Fiador> fiador = service.getFiadorById(id);
 		if (!fiador.isPresent()) {
 			return new ResponseEntity("Fiador não encontrado", HttpStatus.NOT_FOUND);
@@ -45,6 +57,11 @@ public class FiadorController {
 	}
 
 	@PostMapping()
+	@ApiOperation("Salva um novo fiador")
+	@ApiResponses({
+        @ApiResponse(code = 201, message = "Fiador salvo com sucesso"),
+        @ApiResponse(code = 400, message = "Erro ao salvar o fiador")
+	})
 	public ResponseEntity post(FiadorDTO dto) {
 		try {
 			Fiador fiador = converter(dto);
@@ -56,7 +73,8 @@ public class FiadorController {
 	}
 
 	@PutMapping("{id}")
-	public ResponseEntity ataulizar(@PathVariable("id") Long id, FiadorDTO dto) {
+	@ApiOperation("Salva um novo fiador")
+	public ResponseEntity ataulizar(@PathVariable("id") @ApiParam("Id do fiador") Long id, FiadorDTO dto) {
 		if (!service.getFiadorById(id).isPresent()) {
 			return new ResponseEntity("Fiador não encontrado", HttpStatus.NOT_FOUND);
 		}
@@ -72,7 +90,8 @@ public class FiadorController {
 	}
 
 	@DeleteMapping("{id}")
-	public ResponseEntity excluir(@PathVariable("id") Long id) {
+	@ApiOperation("Excluir um fiador")
+	public ResponseEntity excluir(@PathVariable("id") @ApiParam("Id do fiador") Long id) {
 		Optional<Fiador> fiador = service.getFiadorById(id);
 		if (!fiador.isPresent()) {
 			return new ResponseEntity("Fiador não encontrado", HttpStatus.NOT_FOUND);

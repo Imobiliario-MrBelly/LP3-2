@@ -22,24 +22,36 @@ import br.ifsudeste.mrbellyapi.model.entity.Locador;
 import br.ifsudeste.mrbellyapi.service.EnderecoService;
 import br.ifsudeste.mrbellyapi.service.ImovelService;
 import br.ifsudeste.mrbellyapi.service.LocadorService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/imoveis")
 @RequiredArgsConstructor
+@Api("API de Imóveis")
 public class ImovelController {
 	private final ImovelService service;
 	private final EnderecoService enderecoService;
 	private final LocadorService locadorService;
 
 	@GetMapping()
+	@ApiOperation("Obter todos os imóveis")
 	public ResponseEntity get() {
 		List<Imovel> imoveis = service.getImoveis();
 		return ResponseEntity.ok(imoveis.stream().map(ImovelDTO::create));
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity get(@PathVariable("id") Long id) {
+	@ApiOperation("Obter detalhes de um imóvel")
+	@ApiResponses({ 
+		@ApiResponse(code = 200, message = "Imóvel encontrado"),
+		@ApiResponse(code = 404, message = "Imóvel não encontrado")
+	})
+	public ResponseEntity get(@PathVariable("id") @ApiParam("Id do imóvel") Long id) {
 		Optional<Imovel> imovel = service.getImovelById(id);
 		if (!imovel.isPresent()) {
 			return new ResponseEntity("Imóvel não encontrado", HttpStatus.NOT_FOUND);
@@ -48,6 +60,11 @@ public class ImovelController {
 	}
 
 	@PostMapping()
+	@ApiOperation("Salva um novo imóvel")
+	@ApiResponses({
+        @ApiResponse(code = 201, message = "Imóvel salvo com sucesso"),
+        @ApiResponse(code = 400, message = "Erro ao salvar o imóvel")
+	})
 	public ResponseEntity post(ImovelDTO dto) {
 		try {
 			Imovel imovel = converter(dto);
@@ -61,7 +78,8 @@ public class ImovelController {
 	}
 
 	@PutMapping("{id}")
-	public ResponseEntity ataulizar(@PathVariable("id") Long id, ImovelDTO dto) {
+	@ApiOperation("Salva um novo imóvel")
+	public ResponseEntity ataulizar(@PathVariable("id") @ApiParam("Id do imóvel") Long id, ImovelDTO dto) {
 		if (!service.getImovelById(id).isPresent()) {
 			return new ResponseEntity("Imóvel não encontrado", HttpStatus.NOT_FOUND);
 		}
@@ -77,7 +95,8 @@ public class ImovelController {
 	}
 
 	@DeleteMapping("{id}")
-	public ResponseEntity excluir(@PathVariable("id") Long id) {
+	@ApiOperation("Excluir um imóvel")
+	public ResponseEntity excluir(@PathVariable("id") @ApiParam("Id do imóvel") Long id) {
 		Optional<Imovel> imovel = service.getImovelById(id);
 		if (!imovel.isPresent()) {
 			return new ResponseEntity("Imóvel não encontrado", HttpStatus.NOT_FOUND);
