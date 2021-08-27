@@ -72,7 +72,7 @@ public class LocatarioController {
 	}
 
 	@PutMapping("{id}")
-	@ApiOperation("Salva um novo locatário")
+	@ApiOperation("Alterar dados de Locatario")
 	public ResponseEntity atualizar(@PathVariable("id") @ApiParam("Id do locatário") Long id, LocatarioDTO dto) {
 		if (!service.getLocatarioById(id).isPresent()) {
 			return new ResponseEntity("Locatário não encontrado", HttpStatus.NOT_FOUND);

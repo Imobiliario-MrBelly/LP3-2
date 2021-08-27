@@ -78,7 +78,7 @@ public class ImovelController {
 	}
 
 	@PutMapping("{id}")
-	@ApiOperation("Salva um novo imóvel")
+	@ApiOperation("Altera dados de imóveis")
 	public ResponseEntity ataulizar(@PathVariable("id") @ApiParam("Id do imóvel") Long id, ImovelDTO dto) {
 		if (!service.getImovelById(id).isPresent()) {
 			return new ResponseEntity("Imóvel não encontrado", HttpStatus.NOT_FOUND);

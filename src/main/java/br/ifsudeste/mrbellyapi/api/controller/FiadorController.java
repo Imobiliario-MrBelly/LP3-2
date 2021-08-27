@@ -73,7 +73,7 @@ public class FiadorController {
 	}
 
 	@PutMapping("{id}")
-	@ApiOperation("Salva um novo fiador")
+	@ApiOperation("Modifica dados de um fiador ")
 	public ResponseEntity ataulizar(@PathVariable("id") @ApiParam("Id do fiador") Long id, FiadorDTO dto) {
 		if (!service.getFiadorById(id).isPresent()) {
 			return new ResponseEntity("Fiador não encontrado", HttpStatus.NOT_FOUND);
