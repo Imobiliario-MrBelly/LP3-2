@@ -40,11 +40,6 @@ public class LocadorService {
 	@Transactional
 	public void excluir(Locador locador) {
 		Objects.requireNonNull(locador.getId());
-
-		for (Imovel imovel : locador.getImoveis()) {
-			imovel.setLocador(null);
-			imovelService.salvar(imovel);
-		}
 		repository.delete(locador);
 	}
 

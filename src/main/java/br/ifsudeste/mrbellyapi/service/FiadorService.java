@@ -9,15 +9,18 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import br.ifsudeste.mrbellyapi.api.exception.RegraDeNegocioException;
+import br.ifsudeste.mrbellyapi.model.entity.Contrato;
 import br.ifsudeste.mrbellyapi.model.entity.Fiador;
 import br.ifsudeste.mrbellyapi.model.repository.FiadorRepository;
 
 @Service
 public class FiadorService {
 	private FiadorRepository repository;
+	private final ContratoService contratoService;
 
-	public FiadorService(FiadorRepository repository) {
+	public FiadorService(FiadorRepository repository, ContratoService contratoService) {
 		this.repository = repository;
+		this.contratoService = contratoService;
 	}
 
 	public List<Fiador> getFiadores() {
@@ -37,6 +40,10 @@ public class FiadorService {
 	@Transactional
 	public void excluir(Fiador fiador) {
 		Objects.requireNonNull(fiador.getId());
+		for (Contrato contrato : fiador.getContratos()) {            
+            contrato.setFiador(null);
+            contratoService.salvar(contrato);
+        }
 		repository.delete(fiador);
 	}
 
