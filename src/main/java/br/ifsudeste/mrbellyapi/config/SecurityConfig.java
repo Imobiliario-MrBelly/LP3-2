@@ -44,19 +44,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests().antMatchers("/api/v1/contratos").hasAnyRole("USER", "ADMIN")
-				.antMatchers("/api/v1/enderecos/**").hasRole("ADMIN").antMatchers("/api/v1/fiadores/**")
-				.hasRole("ADMIN").antMatchers("/api/v1/imoveis/**").hasAnyRole("USER", "ADMIN")
-				.antMatchers("/api/v1/locadores/**").hasRole("ADMIN").antMatchers("/api/v1/locatarios/**")
-				.hasRole("ADMIN").antMatchers(HttpMethod.POST, "/api/v1/usuarios/**").permitAll().anyRequest()
-				.authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+		http.csrf().disable().authorizeRequests()
+		.antMatchers("/api/v1/contratos/**").hasAnyRole("USER", "ADMIN")
+				.antMatchers("/api/v1/enderecos/**").hasRole("ADMIN")
+				.antMatchers("/api/v1/fiadores/**").hasRole("ADMIN")
+				.antMatchers("/api/v1/imoveis/**").hasAnyRole("USER", "ADMIN")
+				.antMatchers("/api/v1/locadores/**").hasRole("ADMIN")
+				.antMatchers("/api/v1/locatarios/**").hasRole("ADMIN")
+				.antMatchers(HttpMethod.POST, "/api/v1/usuarios/**").permitAll()
+				.anyRequest().authenticated().and().sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 		;
 	}
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**",
-				"/configuration/security", "/swagger-ui.html", "/webjars/**");
+		web.ignoring().antMatchers("/v2/api-docs", 
+				"/configuration/ui", 
+				"/swagger-resources/**",
+				"/configuration/security", 
+				"/swagger-ui.html", 
+				"/webjars/**");
 	}
 }

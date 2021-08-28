@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Fiador extends Pessoa {
-	//@OneToOne(cascade = CascadeType.ALL)
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Endereco endereco;
 }
