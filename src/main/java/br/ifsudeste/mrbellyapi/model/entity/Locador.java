@@ -9,6 +9,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,8 +23,9 @@ public class Locador extends Pessoa {
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private Endereco endereco;
-
-	@OneToMany
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "locador")
 	@JoinTable(name = "imoveis_locador", joinColumns = @JoinColumn(name = "locador_id"), inverseJoinColumns = @JoinColumn(name = "imovel_id"))
 	private List<Imovel> imoveis;
 }
