@@ -10,6 +10,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +30,7 @@ public class Imovel {
 	private double condominio;
 	private double iptu;
 	private int garagem;
+	@JsonIgnore
 	@ManyToOne
 	@JoinTable(name = "imoveis_locador", joinColumns = @JoinColumn(name = "imovel_id"), inverseJoinColumns = @JoinColumn(name = "locador_id"))
 	private Locador locador;
