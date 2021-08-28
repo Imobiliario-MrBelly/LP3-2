@@ -24,6 +24,7 @@ public class Locador extends Pessoa {
 	@OneToOne(cascade = CascadeType.ALL)
 	private Endereco endereco;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "locador")
 	private List<Imovel> imoveis;
 }
