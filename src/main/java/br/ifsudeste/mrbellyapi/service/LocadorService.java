@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import br.ifsudeste.mrbellyapi.api.exception.RegraDeNegocioException;
+import br.ifsudeste.mrbellyapi.model.entity.Imovel;
 import br.ifsudeste.mrbellyapi.model.entity.Locador;
 import br.ifsudeste.mrbellyapi.model.repository.LocadorRepository;
 
@@ -39,6 +40,11 @@ public class LocadorService {
 	@Transactional
 	public void excluir(Locador locador) {
 		Objects.requireNonNull(locador.getId());
+
+		for (Imovel imovel : locador.getImoveis()) {
+			imovel.setLocador(null);
+			imovelService.salvar(imovel);
+		}
 		repository.delete(locador);
 	}
 
