@@ -94,7 +94,7 @@ public class LocadorController {
 	@ApiOperation("Altera dados do Locador")
 	public ResponseEntity atualizar(@PathVariable("id") @ApiParam("Id do locador") Long id, LocadorDTO dto) {
 		if (!service.getLocadorById(id).isPresent()) {
-			return new ResponseEntity("Locador nãoo encontrado", HttpStatus.NOT_FOUND);
+			return new ResponseEntity("Locador não encontrado", HttpStatus.NOT_FOUND);
 		}
 		try {
 			Locador locador = converter(dto);

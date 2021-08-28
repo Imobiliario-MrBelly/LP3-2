@@ -11,14 +11,18 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.ifsudeste.mrbellyapi.api.dto.ContratoDTO;
+import br.ifsudeste.mrbellyapi.api.dto.LocadorDTO;
 import br.ifsudeste.mrbellyapi.api.exception.RegraDeNegocioException;
 import br.ifsudeste.mrbellyapi.model.entity.Contrato;
+import br.ifsudeste.mrbellyapi.model.entity.Endereco;
 import br.ifsudeste.mrbellyapi.model.entity.Fiador;
 import br.ifsudeste.mrbellyapi.model.entity.Imovel;
+import br.ifsudeste.mrbellyapi.model.entity.Locador;
 import br.ifsudeste.mrbellyapi.model.entity.Locatario;
 import br.ifsudeste.mrbellyapi.service.ContratoService;
 import br.ifsudeste.mrbellyapi.service.FiadorService;
@@ -73,6 +77,31 @@ public class ContratoController {
 		try {
 			Contrato contrato = converter(dto);
 			contrato = service.salvar(contrato);
+			return new ResponseEntity(contrato, HttpStatus.CREATED);
+		} catch (RegraDeNegocioException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@PutMapping("{id}")
+	@ApiOperation("Altera dados de contrato")
+	public ResponseEntity atualizar(@PathVariable("id") @ApiParam("Id do Contrato") Long id, ContratoDTO dto) {
+		if (!service.getContratoById(id).isPresent()) {
+			return new ResponseEntity("Contrato não encontrado", HttpStatus.NOT_FOUND);
+		}
+		try {
+			Contrato contrato = converter(dto);
+			
+			Fiador fiador = contrato.getFiador();
+			Imovel imovel = contrato.getImovel();
+			Locatario locatario = contrato.getLocatario();
+			
+			fiadorService.salvar(fiador);
+			imovelService.salvar(imovel);
+			locatarioService.salvar(locatario);
+			
+			service.salvar(contrato);
+			
 			return new ResponseEntity(contrato, HttpStatus.CREATED);
 		} catch (RegraDeNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
