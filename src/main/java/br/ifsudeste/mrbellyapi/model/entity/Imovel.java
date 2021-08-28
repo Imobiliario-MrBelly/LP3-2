@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
@@ -27,6 +29,7 @@ public class Imovel {
 	private double iptu;
 	private int garagem;
 	@ManyToOne
+	@JoinTable(name = "imoveis_locador", joinColumns = @JoinColumn(name = "imovel_id"), inverseJoinColumns = @JoinColumn(name = "locador_id"))
 	private Locador locador;
 	@OneToOne(cascade = CascadeType.ALL)
 	private Endereco endereco;
